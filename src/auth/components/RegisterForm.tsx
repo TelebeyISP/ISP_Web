@@ -9,6 +9,7 @@ interface RegisterFormProps {
 }
 
 const REGISTRATION_ERRORS: Record<number, string> = {
+  409: "This email is already registered",
   422: "This email is already registered",
   400: "Please check your information and try again",
 };
@@ -30,6 +31,10 @@ export const RegisterForm = ({ onSuccess, onLogin }: RegisterFormProps) => {
     }
     if (password.length < 8) {
       setError("Password must be at least 8 characters");
+      return;
+    }
+    if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+      setError("Password must include an uppercase letter and a number");
       return;
     }
 
@@ -97,7 +102,7 @@ export const RegisterForm = ({ onSuccess, onLogin }: RegisterFormProps) => {
           <input
             id="password-reg" type="password" autoComplete="new-password" required
             value={password} onChange={e => setPassword(e.target.value)}
-            placeholder="••••••••"
+            placeholder="At least 8 chars, 1 uppercase, 1 number"
             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           />
         </div>

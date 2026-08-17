@@ -2,9 +2,23 @@ import { useNavigate } from "react-router-dom";
 import { Check, ShieldCheck, Zap, Globe, Package, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useShop } from "@/hooks/use-shop";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchPlans, type ApiGatePlan } from "@/lib/apigate";
 
-const PLANS = [
+type DisplayPlan = {
+  id: string;
+  code: string;
+  variantCode: string;
+  name: string;
+  price: number;
+  data: string;
+  description: string;
+  features: string[];
+  color: string;
+  popular?: boolean;
+};
+
+const FALLBACK_PLANS: DisplayPlan[] = [
   {
     id: "plan-starter",
     code: "starter_plan",
@@ -41,15 +55,60 @@ const PLANS = [
   }
 ];
 
+function formatDataAllowance(dataLimitMb: number): string {
+  if (dataLimitMb >= 999_999) return "Unlimited";
+  if (dataLimitMb >= 1024) return `${Math.round(dataLimitMb / 1024)}GB`;
+  return `${dataLimitMb}MB`;
+}
+
+function mapApiPlan(plan: ApiGatePlan, index: number): DisplayPlan {
+  const data = formatDataAllowance(plan.dataLimitMb);
+  const features = [
+    `${data} 5G data`,
+    `${plan.validityDays}-day validity`,
+    "eSIM included",
+    plan.description || "Telebey network access",
+  ];
+  return {
+    id: plan.id,
+    code: plan.name.toLowerCase().replace(/\s+/g, "_"),
+    variantCode: plan.id,
+    name: plan.name,
+    price: plan.priceCents / 100,
+    data,
+    description: plan.description || "Telebey data plan",
+    features,
+    color: ["blue", "indigo", "teal"][index % 3],
+    popular: index === 1,
+  };
+}
+
 export function Plans() {
   const { addToCart } = useShop();
   const navigate = useNavigate();
   const [addingId, setAddingId] = useState<string | null>(null);
+  const [plans, setPlans] = useState<DisplayPlan[]>(FALLBACK_PLANS);
+  const [fromApiGate, setFromApiGate] = useState(false);
 
-  const handleAddToCart = async (plan: typeof PLANS[0]) => {
+  useEffect(() => {
+    let cancelled = false;
+    fetchPlans()
+      .then((apiPlans) => {
+        if (cancelled || !apiPlans.length) return;
+        setPlans(apiPlans.map(mapApiPlan));
+        setFromApiGate(true);
+      })
+      .catch(() => {
+        if (!cancelled) setFromApiGate(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleAddToCart = async (plan: DisplayPlan) => {
     setAddingId(plan.id);
     try {
-      // In a real setup, variant codes are fetched from Sylius API
       await addToCart(plan.variantCode, 1);
       navigate("/cart");
     } catch (err) {
@@ -69,10 +128,13 @@ export function Plans() {
           <p className="text-lg text-muted-foreground">
             No contracts. No hidden fees. Just premium 5G connectivity tailored to your lifestyle.
           </p>
+          <p className="mt-3 text-xs font-medium uppercase tracking-widest text-muted-foreground/70">
+            {fromApiGate ? "Live catalog from ApiGate" : "Showing catalog (ApiGate offline — local fallback)"}
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {PLANS.map((plan) => (
+          {plans.map((plan) => (
             <div 
               key={plan.id}
               className={`relative bg-card border ${plan.popular ? 'border-primary ring-1 ring-primary/20' : 'border-border'} rounded-2xl p-8 flex flex-col shadow-sm hover:shadow-xl transition-all hover:translate-y-[-4px] active:scale-[0.99] group`}

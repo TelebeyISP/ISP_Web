@@ -1,73 +1,78 @@
-# React + TypeScript + Vite
+# Telebey ISP Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Telebey is the customer-facing MVNO web app: plans, eSIM activation, account, cart, and identity login.
 
-Currently, two official plugins are available:
+This frontend talks to **[ApiGate](https://github.com/TelebeyISP/ApiGate)** for authentication, data plans, and SIM lifecycle. The Sylius shop API remains available for cart/catalog when that service is running.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## App preview
 
-## React Compiler
+Screenshots and a walkthrough video are added after a local run (see `docs/`).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+![Telebey home](docs/screenshots/home.png)
 
-## Expanding the ESLint configuration
+![Plans catalog](docs/screenshots/plans.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+<video src="docs/demo.mp4" controls width="100%" title="Telebey app walkthrough"></video>
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+If the video does not embed in GitHub, download it from [docs/demo.mp4](docs/demo.mp4).
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Connect to ApiGate
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+ApiGate is the NestJS gateway at [TelebeyISP/ApiGate](https://github.com/TelebeyISP/ApiGate.git). This app calls it through a Vite proxy so the browser never has to fight CORS in local development.
+
+| Frontend route | ApiGate endpoint |
+| --- | --- |
+| Email login / register | `POST /auth/login`, `POST /auth/register` |
+| Session | `GET /auth/me`, `POST /auth/refresh`, `POST /auth/logout` |
+| Plans catalog | `GET /plans` |
+| SIM usage | `GET /sim` |
+| eSIM activation | `POST /sim/activate` |
+| Health check | `GET /health` |
+
+1. Clone and start ApiGate (Postgres + Redis + NestJS on port **4000**):
+
+```bash
+git clone https://github.com/TelebeyISP/ApiGate.git
+cd ApiGate
+cp telebey-platform/.env.example telebey-platform/.env
+# start postgres/redis + API, or run the API in watch mode:
+# docker compose -f telebey-platform/docker-compose.auth.yml up -d
+cd telebey-platform/apps/api
+npm install
+npm run start:dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Copy env for this web app:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cp .env.example .env.local
 ```
+
+`VITE_APIGATE_URL=/apigate` sends browser requests to Vite, which proxies `/apigate/*` to `http://127.0.0.1:4000`. Override the target with `APIGATE_PROXY_TARGET` if ApiGate is not on localhost:4000.
+
+Demo accounts (from ApiGate seed data):
+
+- User: `user@test.com` / `Test1234!`
+- Admin: `admin@telebey.com` / `Admin1234!`
+
+## Run the web app
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173). Plans fall back to a local catalog if ApiGate is offline; login, SIM usage, and eSIM activation require ApiGate.
+
+```bash
+npm run build
+npm run preview
+```
+
+## Stack
+
+- React 19 + TypeScript + Vite
+- Tailwind CSS + shadcn/ui
+- Axios client in `src/lib/apigate.ts`
+- ApiGate (NestJS) for auth / SIMs / plans
+- Optional Sylius shop API for cart (`VITE_SYLIUS_API_URL`)
