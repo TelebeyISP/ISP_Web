@@ -1,7 +1,41 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, Wifi } from "lucide-react";
+import { ArrowLeft, Wifi, Loader2, Smartphone } from "lucide-react";
+import { useEffect, useState } from "react";
+import { fetchSims, type ApiGateSim } from "@/lib/apigate";
+import { useAuth } from "@/context/AuthContext";
 
 export function ManageData() {
+  const { isAuthenticated } = useAuth();
+  const [sims, setSims] = useState<ApiGateSim[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    fetchSims()
+      .then((data) => {
+        if (!cancelled) setSims(data);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          console.error("Failed to load SIMs from ApiGate", err);
+          setError("Could not load SIM usage from ApiGate.");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated]);
+
   return (
     <main className="flex-1 container mx-auto py-12 px-4 max-w-4xl">
       <Link to="/account" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-8">
@@ -14,16 +48,45 @@ export function ManageData() {
         </div>
         <h1 className="text-3xl font-bold tracking-tight">Manage Data</h1>
       </div>
-      
-      <div className="bg-card border border-border rounded-xl p-8 text-center shadow-sm">
-        <h2 className="text-xl font-medium mb-2">No Active Data Plan Found</h2>
-        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-          It looks like you don't have an active telecommunication subscription yet. Get a plan to start tracking your data usage here.
-        </p>
-        <Link to="/plans" className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4">
-          View Plans
-        </Link>
-      </div>
+
+      {loading ? (
+        <div className="bg-card border border-border rounded-xl p-8 flex items-center justify-center gap-2 text-muted-foreground">
+          <Loader2 className="w-5 h-5 animate-spin" /> Loading SIM usage from ApiGate…
+        </div>
+      ) : sims.length > 0 ? (
+        <div className="space-y-4">
+          {sims.map((sim) => (
+            <div key={sim.id} className="bg-card border border-border rounded-xl p-6 shadow-sm">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <Smartphone className="w-5 h-5 text-primary" />
+                  <div>
+                    <p className="font-semibold">{sim.iccid}</p>
+                    <p className="text-sm text-muted-foreground">IMSI {sim.imsi || "—"}</p>
+                  </div>
+                </div>
+                <span className="text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+                  {sim.status}
+                </span>
+              </div>
+              <p className="mt-4 text-sm text-muted-foreground">
+                Used {Number(sim.dataUsedMb).toFixed(1)} MB
+                {sim.plan ? ` · ${sim.plan.name}` : " · No plan assigned"}
+              </p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="bg-card border border-border rounded-xl p-8 text-center shadow-sm">
+          <h2 className="text-xl font-medium mb-2">No Active Data Plan Found</h2>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            {error || "It looks like you don't have an active telecommunication subscription yet. Get a plan to start tracking your data usage here."}
+          </p>
+          <Link to="/plans" className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4">
+            View Plans
+          </Link>
+        </div>
+      )}
     </main>
   );
 }
