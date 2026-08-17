@@ -2,37 +2,49 @@
 
 Telebey is the customer-facing MVNO web app: plans, eSIM activation, account, cart, and identity login.
 
-This frontend talks to **[ApiGate](https://github.com/TelebeyISP/ApiGate)** for authentication, data plans, and SIM lifecycle. The Sylius shop API remains available for cart/catalog when that service is running.
+This frontend talks to **[ApiGate](https://github.com/TelebeyISP/ApiGate)** for authentication, data plans, and SIM lifecycle.
 
-## App preview
+## Screenshots
 
-Captured from a local run with Vite on port 5173 and ApiGate on port 4000. The plans page shows **Live catalog from ApiGate**.
+Captured from a live local run (Vite `:5173` + ApiGate `:4000`). The plans page shows **Live catalog from ApiGate**.
 
-### Home
+<p align="center">
+  <img src="docs/screenshots/home.png" alt="Telebey home — Zero Lag. Pure Vibes." width="900" />
+</p>
 
-![Telebey home](docs/screenshots/home.png)
+**Home** — landing hero.
 
-### Plans (ApiGate catalog)
+<p align="center">
+  <img src="docs/screenshots/plans.png" alt="Plans catalog loaded from ApiGate" width="900" />
+</p>
 
-![Plans catalog](docs/screenshots/plans.png)
+**Plans** — live catalog from ApiGate (`GET /plans`).
 
-### Sign in
+<p align="center">
+  <img src="docs/screenshots/auth.png" alt="MytID sign-in" width="900" />
+</p>
 
-![Auth / MytID](docs/screenshots/auth.png)
+**Sign in** — MytID / `/auth`.
 
-### eSIM activation
+<p align="center">
+  <img src="docs/screenshots/activate.png" alt="eSIM activation via ApiGate" width="900" />
+</p>
 
-![Activate eSIM](docs/screenshots/activate.png)
+**eSIM activation** — processed by ApiGate (`POST /sim/activate`).
 
-### Cart
+<p align="center">
+  <img src="docs/screenshots/cart.png" alt="Empty cart" width="900" />
+</p>
 
-![Empty cart](docs/screenshots/cart.png)
+**Cart**
 
-### Walkthrough video
+## Walkthrough
 
-<video src="docs/demo.mp4" controls width="100%" title="Telebey app walkthrough"></video>
+<p align="center">
+  <img src="docs/preview.gif" alt="Telebey walkthrough GIF" width="900" />
+</p>
 
-If the video does not embed, open [docs/demo.mp4](docs/demo.mp4).
+Full recording: [docs/demo.mp4](docs/demo.mp4)
 
 ## Connect to ApiGate
 
@@ -47,44 +59,29 @@ ApiGate is the NestJS gateway at [TelebeyISP/ApiGate](https://github.com/Telebey
 | eSIM activation | `POST /sim/activate` |
 | Health | `GET /health` |
 
-1. Clone and start ApiGate (Postgres + Redis + NestJS on port **4000**):
-
 ```bash
 git clone https://github.com/TelebeyISP/ApiGate.git
-cd ApiGate
-cp telebey-platform/.env.example telebey-platform/.env
-# docker compose -f telebey-platform/docker-compose.auth.yml up -d
-cd telebey-platform/apps/api
+cd ApiGate/telebey-platform/apps/api
 npm install
 npm run start:dev
 ```
 
-2. Copy env for this web app:
-
 ```bash
 cp .env.example .env.local
-```
-
-`VITE_APIGATE_URL=/apigate` uses the Vite proxy. Override the backend with `APIGATE_PROXY_TARGET` if ApiGate is not on localhost:4000.
-
-Demo accounts (ApiGate seed data):
-
-- User: `user@test.com` / `Test1234!`
-- Admin: `admin@telebey.com` / `Admin1234!`
-
-## Run the web app
-
-```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). Plans fall back to a local catalog if ApiGate is offline. Login, SIM usage, and eSIM activation require ApiGate.
+Open [http://localhost:5173](http://localhost:5173).
 
-```bash
-npm run build
-npm run preview
-```
+Demo accounts:
+
+- User: `user@test.com` / `Test1234!`
+- Admin: `admin@telebey.com` / `Admin1234!`
+
+`VITE_APIGATE_URL=/apigate` uses the Vite proxy. Override the backend with `APIGATE_PROXY_TARGET` if ApiGate is not on localhost:4000.
+
+Plans fall back to a local catalog if ApiGate is offline. Login, SIM usage, and eSIM activation require ApiGate.
 
 ## Stack
 
