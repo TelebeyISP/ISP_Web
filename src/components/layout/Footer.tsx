@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { APIGATE_REPO, ROUTER_DASHBOARD_REPO, routerDashboardUrl } from "@/lib/integrations";
 
 export function Footer() {
   return (
@@ -47,8 +48,21 @@ export function Footer() {
           <div>
             <h4 className="font-bold text-white mb-4">Resources</h4>
             <ul className="space-y-3 text-sm opacity-90">
-              <li><a href="#" className="hover:text-primary transition-colors">API Documentation</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Developer Portal</a></li>
+              <li>
+                <a href={APIGATE_REPO} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                  ApiGate (GitHub)
+                </a>
+              </li>
+              <li>
+                <a href={ROUTER_DASHBOARD_REPO} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                  Router Dashboard (GitHub)
+                </a>
+              </li>
+              <li>
+                <a href={routerDashboardUrl} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                  Open5GS WebUI
+                </a>
+              </li>
             </ul>
           </div>
 

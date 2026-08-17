@@ -2,7 +2,7 @@
 
 Telebey is the customer-facing MVNO web app: plans, eSIM activation, account, cart, and identity login.
 
-This frontend talks to **[ApiGate](https://github.com/TelebeyISP/ApiGate)** for authentication, data plans, and SIM lifecycle.
+This frontend talks to **[ApiGate](https://github.com/TelebeyISP/ApiGate)** for authentication, data plans, and SIM lifecycle, and links to the **[Open5GS Router Dashboard](https://github.com/TelebeyISP/isp.router-dashboard)** for network administration.
 
 ## Screenshots
 
@@ -83,10 +83,32 @@ Demo accounts:
 
 Plans fall back to a local catalog if ApiGate is offline. Login, SIM usage, and eSIM activation require ApiGate.
 
+## Connect to Router Dashboard
+
+The [isp.router-dashboard](https://github.com/TelebeyISP/isp.router-dashboard.git) repo is the Open5GS administration UI. It manages subscribers, APN profiles, and WebUI accounts, and proxies ApiGate server-side at `/api/apigate/*`.
+
+| Component | URL (dev) |
+| --- | --- |
+| This web app | [http://localhost:5173](http://localhost:5173) |
+| ApiGate | [http://localhost:4000](http://localhost:4000) |
+| Router dashboard | [http://localhost:9999](http://localhost:9999) |
+
+From **My Account → Telebey Nett Settings**, signed-in users open the router dashboard in a new tab. Set `VITE_ROUTER_DASHBOARD_URL` if it is not on `http://localhost:9999`.
+
+```bash
+git clone https://github.com/TelebeyISP/isp.router-dashboard.git
+cd isp.router-dashboard/webui
+npm install
+npm run dev
+```
+
+Default login: `admin` / `1423`. MongoDB must be reachable at `mongodb://127.0.0.1:27017/open5gs`. Run ApiGate alongside the dashboard so the **ApiGate** sidebar shows live health and plans.
+
 ## Stack
 
 - React 19 + TypeScript + Vite
 - Tailwind CSS + shadcn/ui
 - Axios client in `src/lib/apigate.ts`
 - ApiGate (NestJS) for auth / SIMs / plans
+- Router dashboard (Open5GS WebUI) via `VITE_ROUTER_DASHBOARD_URL`
 - Optional Sylius shop API for cart (`VITE_SYLIUS_API_URL`)
