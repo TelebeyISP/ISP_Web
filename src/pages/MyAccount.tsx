@@ -6,6 +6,7 @@ import {
   Sparkles, ChevronRight
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { routerDashboardUrl } from "@/lib/integrations";
 
 // Simple mock for whether the user has a subscription.
 // In a real app we would check `user.subscriptions` or a `/lines` endpoint.
@@ -152,7 +153,7 @@ export function MyAccount() {
               </Link>
 
               {/* Telebey Nett Settings (Open5GS panel) */}
-              <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 py-3 rounded-lg text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors font-bold border-t border-border mt-2 pt-4">
+              <a href={routerDashboardUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 py-3 rounded-lg text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors font-bold border-t border-border mt-2 pt-4">
                 <Server className="w-5 h-5 text-indigo-500" /> Telebey Nett Settings
               </a>
 

@@ -1,0 +1,25 @@
+{
+  "name": "Telebey ISP Web",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "install": "bash .cursor/scripts/install.sh",
+  "start": "bash .cursor/scripts/start-docker.sh",
+  "repositoryDependencies": [
+    "github.com/TelebeyISP/ApiGate",
+    "github.com/TelebeyISP/isp.router-dashboard"
+  ],
+  "ports": [
+    { "name": "vite", "port": 5173 },
+    { "name": "apigate", "port": 4000 },
+    { "name": "router-dashboard", "port": 9999 }
+  ],
+  "terminals": [
+    {
+      "name": "vite",
+      "command": "npm run dev",
+      "description": "Telebey customer web app (Vite dev server)"
+    }
+  ]
+}
