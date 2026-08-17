@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_APIGATE_URL?: string;
+  readonly VITE_ROUTER_DASHBOARD_URL?: string;
   readonly VITE_SYLIUS_API_URL?: string;
 }
 
