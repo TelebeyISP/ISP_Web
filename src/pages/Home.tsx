@@ -186,7 +186,7 @@ export function Home() {
                 <div className="w-[360px] bg-white rounded-3xl shadow-[0_20px_60px_-15px_rgba(24,119,242,0.15)] p-8 transform rotate-[-4deg] translate-x-12 translate-y-12 group-hover:rotate-0 group-hover:translate-x-4 group-hover:translate-y-8 transition-all duration-700 ease-out absolute bottom-[-50px] right-[-20px] border border-blue-50/50 backdrop-blur-sm">
                   <div className="flex justify-between items-center mb-8">
                     <Star className="w-6 h-6 text-[#1877f2] fill-current" />
-                    <span className="bg-[#1877f2] text-white text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Most Popular</span>
+                    <span className="bg-[#1877f2] text-white text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Light use</span>
                   </div>
                   <h4 className="text-2xl font-bold mb-3 text-gray-900">Starter · 5GB</h4>
                   <p className="text-[#64748b] text-sm mb-8 leading-relaxed max-w-[85%]">Light 5G data for one person. Step up when you need more.</p>
