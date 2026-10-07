@@ -3,12 +3,15 @@ import { ChevronDown, ShoppingCart, User, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useShop } from "@/hooks/use-shop";
 import { useAuth } from "@/context/AuthContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { UserSearch } from "../UserSearch";
 
 export function Header() {
   const { cart } = useShop();
   const { user } = useAuth();
-  const cartItemsCount = cart?.items.length || 0;
+  const { wishlist } = useWishlist();
+  const cartItemsCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) || 0;
+  const wishlistCount = wishlist.length;
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background border-b border-border shadow-sm">
@@ -52,11 +55,16 @@ export function Header() {
           
           <UserSearch />
 
-          <Link to="/wishlist" title="Wishlist" className="p-2 rounded-full hover:bg-muted transition-colors group">
-            <Heart className="h-6 w-6 text-foreground group-hover:text-primary transition-colors" />
+          <Link to="/wishlist" title="Wishlist" className="relative p-2 rounded-full hover:bg-muted transition-colors group">
+            <Heart className={`h-6 w-6 transition-colors ${wishlistCount > 0 ? "fill-primary text-primary" : "text-foreground group-hover:text-primary"}`} />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-background">
+                {wishlistCount}
+              </span>
+            )}
           </Link>
 
-          <Link to="/cart" className="relative p-2 rounded-full hover:bg-muted transition-colors group">
+          <Link to="/cart" title="Cart" className="relative p-2 rounded-full hover:bg-muted transition-colors group">
             <ShoppingCart className="h-6 w-6 text-foreground group-hover:text-primary transition-colors" />
             {cartItemsCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-background animate-in zoom-in duration-300">

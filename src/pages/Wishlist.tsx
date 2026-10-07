@@ -54,9 +54,9 @@ export function Wishlist() {
           <Button 
             size="lg" 
             className="font-bold px-8 h-12 shadow-md shadow-primary/20"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/shop")}
           >
-            Explore Plans
+            Browse the shop
           </Button>
         </div>
       </main>

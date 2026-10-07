@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { ShoppingCart, Heart, Search, Filter, Star, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useShop } from "@/hooks/use-shop";
@@ -75,6 +76,7 @@ const products = [
 type StoreCard = {
   id: string;
   variantId: string;
+  handle: string;
   name: string;
   description: string;
   price: number;
@@ -91,6 +93,7 @@ function cardsFromMedusa(products: MedusaProduct[]): StoreCard[] {
     return {
       id: product.id,
       variantId: variant?.id || product.id,
+      handle: product.handle,
       name: product.title,
       description: product.description || "",
       price: Math.round((amount ?? 0) * 100),
@@ -106,14 +109,20 @@ export function Shop() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const { addToCart, cart } = useShop();
-  const { addToWishlist, wishlist } = useWishlist();
+  const { addToWishlist, removeFromWishlist, wishlist } = useWishlist();
   const [addedItems, setAddedItems] = useState<Record<string, boolean>>({});
+  const [searchParams] = useSearchParams();
   const [catalog, setCatalog] = useState<StoreCard[]>(
-    products.map((product) => ({ ...product, variantId: product.id }))
+    products.map((product) => ({ ...product, variantId: product.id, handle: product.id }))
   );
   const [categoryNames, setCategoryNames] = useState(categories);
   const [fromMedusa, setFromMedusa] = useState(false);
   const [loadingCatalog, setLoadingCatalog] = useState(true);
+
+  useEffect(() => {
+    const query = searchParams.get("q") || searchParams.get("product") || "";
+    if (query) setSearchQuery(query);
+  }, [searchParams]);
 
   useEffect(() => {
     let cancelled = false;
@@ -141,8 +150,10 @@ export function Shop() {
 
   const filteredProducts = catalog.filter(product => {
     const matchesCategory = activeCategory === "All" || product.category === activeCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const needle = searchQuery.toLowerCase();
+    const matchesSearch = product.name.toLowerCase().includes(needle) ||
+                          product.description.toLowerCase().includes(needle) ||
+                          product.handle.toLowerCase().includes(needle);
     return matchesCategory && matchesSearch;
   });
 
@@ -169,21 +180,23 @@ export function Shop() {
 
   const handleToggleWishlist = async (product: any) => {
     try {
-      const inWishlist = wishlist?.some(item => item.id === product.id);
-      if (!inWishlist) {
+      const savedId = wishlist?.find(item => item.id === product.variantId || item.id === product.id)?.id;
+      if (!savedId) {
          await addToWishlist({
-           id: product.id,
+           id: product.variantId,
+           productId: product.id,
            productName: product.name,
            variantName: "Standard",
            unitPrice: product.price,
            image: product.image
          });
-         toast.success(`${product.name} saved to wishlist!`);
+         toast.success(`${product.name} saved to your Medusa wishlist.`);
       } else {
-         toast.info(`${product.name} is already in your wishlist.`);
+         await removeFromWishlist(savedId);
+         toast.success(`${product.name} removed from your wishlist.`);
       }
     } catch (error) {
-      toast.error("You must be logged in to use the wishlist.");
+      toast.error("Could not update your wishlist.");
     }
   };
 
@@ -277,7 +290,7 @@ export function Shop() {
                 {filteredProducts.map(product => {
                   const inCart = cart?.items.some(i => i.variantId === product.variantId || i.id === product.id);
                   const isJustAdded = addedItems[product.id];
-                  const inWishlist = wishlist?.some(i => i.id === product.id);
+                  const inWishlist = wishlist?.some(i => i.id === product.variantId || i.id === product.id);
 
                   return (
                     <div key={product.id} className="group flex flex-col bg-card rounded-[2rem] border border-border overflow-hidden hover:border-primary/40 hover:shadow-xl transition-all duration-300">

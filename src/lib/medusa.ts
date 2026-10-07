@@ -30,12 +30,25 @@ export function getMedusaCustomerToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
 }
 
+const sessionListeners = new Set<() => void>();
+
+export function onMedusaSession(listener: () => void) {
+  sessionListeners.add(listener);
+  return () => sessionListeners.delete(listener);
+}
+
+function notifyMedusaSession() {
+  sessionListeners.forEach((listener) => listener());
+}
+
 export function setMedusaCustomerToken(token: string) {
   localStorage.setItem(TOKEN_KEY, token);
+  notifyMedusaSession();
 }
 
 export function clearMedusaSession() {
   localStorage.removeItem(TOKEN_KEY);
+  notifyMedusaSession();
 }
 
 export function getStoredCartId(): string | null {
@@ -101,6 +114,56 @@ export function preferredRegion(regions: MedusaRegion[]): MedusaRegion | undefin
     regions.find((region) => region.name.toLowerCase().includes("united states")) ||
     regions[0]
   );
+}
+
+export type MedusaSearchHit = {
+  id: string;
+  title: string;
+  handle?: string;
+  thumbnail?: string | null;
+};
+
+export async function searchProducts(term: string): Promise<MedusaSearchHit[]> {
+  const { data } = await medusa.post<{
+    results: { hits: { id: string; document?: MedusaSearchHit }[] }[];
+  }>("/store/search", {
+    entity: "product",
+    filters: { q: term },
+    pagination: { take: 6 },
+    fields: ["id", "title", "handle", "thumbnail"],
+  });
+  return (data.results?.[0]?.hits ?? []).map((hit) => ({
+    id: hit.document?.id || hit.id,
+    title: hit.document?.title || "Product",
+    handle: hit.document?.handle,
+    thumbnail: hit.document?.thumbnail,
+  }));
+}
+
+export type MedusaWishlistItem = {
+  id: string;
+  productId?: string;
+  productName: string;
+  variantName: string;
+  unitPrice: number;
+  image?: string;
+};
+
+export async function fetchWishlist(): Promise<MedusaWishlistItem[]> {
+  const { data } = await medusa.get<{ wishlist: MedusaWishlistItem[] }>("/store/wishlist");
+  return data.wishlist ?? [];
+}
+
+export async function saveWishlistItem(item: MedusaWishlistItem): Promise<MedusaWishlistItem[]> {
+  const { data } = await medusa.post<{ wishlist: MedusaWishlistItem[] }>("/store/wishlist", item);
+  return data.wishlist ?? [];
+}
+
+export async function deleteWishlistItem(id: string): Promise<MedusaWishlistItem[]> {
+  const { data } = await medusa.delete<{ wishlist: MedusaWishlistItem[] }>(
+    `/store/wishlist/${encodeURIComponent(id)}`
+  );
+  return data.wishlist ?? [];
 }
 
 export async function listProducts(regionId?: string): Promise<MedusaProduct[]> {
