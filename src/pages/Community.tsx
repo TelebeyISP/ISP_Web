@@ -207,7 +207,7 @@ export function Community() {
               Connect & <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-600">Collaborate</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-2xl">
-              Join the global Telebey conversation. Share tips, get support, and help build the future of connectivity.
+              Ask how other people set up a Telebey line, compare home internet with mobile data, and share what worked on your phone.
             </p>
           </div>
         </div>

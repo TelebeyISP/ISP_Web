@@ -11,11 +11,13 @@ export interface Product {
 
 export interface CartItem {
   id: string;
+  variantId?: string;
   variantName: string;
   productName: string;
   unitPrice: number;
   total: number;
   quantity: number;
+  image?: string;
 }
 
 export interface Cart {
@@ -24,4 +26,5 @@ export interface Cart {
   itemsTotal: number;
   total: number;
   currencyCode: string;
+  isLocal?: boolean;
 }

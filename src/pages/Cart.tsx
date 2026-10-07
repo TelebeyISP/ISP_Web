@@ -40,7 +40,7 @@ export function Cart() {
           <Button 
             size="lg" 
             className="font-bold px-8 h-12 shadow-md shadow-primary/20"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/shop")}
           >
             Start Shopping
           </Button>
@@ -166,7 +166,7 @@ export function Cart() {
                 >
                   Proceed to Checkout
                 </Button>
-                <Link to="/" className="block">
+                <Link to="/shop" className="block">
                   <Button variant="outline" className="w-full h-12 font-bold border-border hover:bg-muted transition-colors">
                     Continue Shopping
                   </Button>

@@ -1,12 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
-import { 
-  doc, onSnapshot, updateDoc, arrayUnion, arrayRemove, setDoc 
-} from 'firebase/firestore';
-import { useAuth } from './AuthContext';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import {
+  deleteWishlistItem,
+  fetchWishlist,
+  getMedusaCustomerToken,
+  onMedusaSession,
+  saveWishlistItem,
+  type MedusaWishlistItem,
+} from '@/lib/medusa';
 
 export interface WishlistItem {
   id: string;
+  productId?: string;
   productName: string;
   variantName: string;
   unitPrice: number;
@@ -22,97 +26,88 @@ interface WishlistContextValue {
 }
 
 const WishlistContext = createContext<WishlistContextValue | null>(null);
+const LOCAL_KEY = 'medusa_wishlist';
+
+function readLocal(): WishlistItem[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_KEY);
+    return raw ? (JSON.parse(raw) as WishlistItem[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeLocal(items: WishlistItem[]) {
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(items));
+}
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
-  const { user, isAuthenticated } = useAuth();
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const loadLocalWishlist = () => {
-       const local = localStorage.getItem('local_wishlist');
-       if (local) {
-          try {
-            setWishlist(JSON.parse(local));
-          } catch (e) {
-            setWishlist([]);
-          }
-       } else {
-          setWishlist([]);
-       }
-    };
-
-    if (!isAuthenticated || !user?.id) {
-      loadLocalWishlist();
+  const refresh = useCallback(async () => {
+    const local = readLocal();
+    if (!getMedusaCustomerToken()) {
+      setWishlist(local);
       setIsLoading(false);
       return;
     }
 
-    const unsub = onSnapshot(doc(db, 'users', user.id), (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setWishlist(data.wishlist || []);
+    try {
+      let remote = await fetchWishlist();
+      const missing = local.filter((item) => !remote.some((saved) => saved.id === item.id));
+      for (const item of missing) {
+        remote = await saveWishlistItem(item as MedusaWishlistItem);
       }
+      writeLocal(remote);
+      setWishlist(remote);
+    } catch (error) {
+      console.warn('Medusa wishlist unavailable, using this browser.', error);
+      setWishlist(local);
+    } finally {
       setIsLoading(false);
-    }, (error) => {
-      console.warn("Firebase snapshot failed, falling back to local wishlist.", error);
-      loadLocalWishlist();
-      setIsLoading(false);
-    });
+    }
+  }, []);
 
-    return () => unsub();
-  }, [isAuthenticated, user?.id]);
+  useEffect(() => {
+    refresh();
+    return onMedusaSession(() => {
+      refresh();
+    });
+  }, [refresh]);
 
   const addToWishlist = async (item: WishlistItem) => {
-    if (!user?.id) {
-       // Local fallback
-       const newWishlist = [...wishlist, item];
-       localStorage.setItem('local_wishlist', JSON.stringify(newWishlist));
-       setWishlist(newWishlist);
-       return;
-    }
+    const local = readLocal();
+    const next = local.some((entry) => entry.id === item.id) ? local : [...local, item];
+    writeLocal(next);
+    setWishlist(next);
+
+    if (!getMedusaCustomerToken()) return;
     try {
-      const userRef = doc(db, 'users', user.id);
-      await updateDoc(userRef, {
-        wishlist: arrayUnion(item)
-      });
-    } catch (e) {
-      console.error("Error adding to wishlist:", e);
-      // Local fallback on error
-      const newWishlist = [...wishlist, item];
-      localStorage.setItem('local_wishlist', JSON.stringify(newWishlist));
-      setWishlist(newWishlist);
+      const remote = await saveWishlistItem(item);
+      writeLocal(remote);
+      setWishlist(remote);
+    } catch (error) {
+      console.warn('Could not save wishlist item on Medusa', error);
     }
   };
 
   const removeFromWishlist = async (id: string) => {
-    if (!user?.id) {
-       // Local fallback
-       const newWishlist = wishlist.filter(i => i.id !== id);
-       localStorage.setItem('local_wishlist', JSON.stringify(newWishlist));
-       setWishlist(newWishlist);
-       return;
-    }
+    const next = readLocal().filter((item) => item.id !== id);
+    writeLocal(next);
+    setWishlist(next);
+
+    if (!getMedusaCustomerToken()) return;
     try {
-      const userRef = doc(db, 'users', user.id);
-      const itemToRemove = wishlist.find(i => i.id === id);
-      if (itemToRemove) {
-        await updateDoc(userRef, {
-          wishlist: arrayRemove(itemToRemove)
-        });
-      }
-    } catch (e) {
-      console.error("Error removing from wishlist:", e);
-      // Local fallback on error
-      const newWishlist = wishlist.filter(i => i.id !== id);
-      localStorage.setItem('local_wishlist', JSON.stringify(newWishlist));
-      setWishlist(newWishlist);
+      const remote = await deleteWishlistItem(id);
+      writeLocal(remote);
+      setWishlist(remote);
+    } catch (error) {
+      console.warn('Could not remove wishlist item on Medusa', error);
     }
   };
 
-  const isInWishlist = (id: string) => {
-    return wishlist.some(item => item.id === id);
-  };
+  const isInWishlist = (id: string) => wishlist.some((item) => item.id === id);
 
   return (
     <WishlistContext.Provider value={{ wishlist, isLoading, addToWishlist, removeFromWishlist, isInWishlist }}>

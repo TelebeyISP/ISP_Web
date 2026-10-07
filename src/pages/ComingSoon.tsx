@@ -1,13 +1,13 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowLeft, Mail, Home, Bell } from "lucide-react";
+import { Sparkles, ArrowLeft, Mail, Home, Bell, Heart } from "lucide-react";
 
 export function ComingSoon() {
   const navigate = useNavigate();
   const location = useLocation();
   
   const isMail = location.pathname.includes('/mail');
-  const isHomeNet = location.pathname.includes('/home/net');
+  const isHomeNet = location.pathname.includes("/homenet") || location.pathname.includes("/home/net");
   const isWishlist = location.pathname.includes('/wishlist');
 
   const content = {
@@ -15,7 +15,7 @@ export function ComingSoon() {
     description: isMail 
       ? "A secure, encrypted communication hub for the Telebey ecosystem. Experience privacy without compromise." 
       : isHomeNet 
-        ? "The future of domestic connectivity is almost here. Manage your home network with gigabit speeds from anywhere."
+        ? "Home internet you can pair with a Telebey mobile plan. Choose a speed, add SIMs for the household, and see one monthly total before you order."
         : isWishlist
           ? "Save your favorite plans and devices for later. Your personalized Telebey wishlist is launching soon."
           : "We're working hard to bring this feature to life. Stay tuned for updates.",

@@ -7,7 +7,7 @@ export function TopBar() {
       <div className="container mx-auto px-4 h-10 flex items-center justify-between text-xs md:text-sm font-medium uppercase tracking-wide">
         {/* Left Side Links */}
         <nav className="flex items-center space-x-4 md:space-x-6">
-          <Link to="/cart" className="hover:opacity-70 transition-opacity">Shop</Link>
+          <Link to="/" className="hover:opacity-70 transition-opacity">Personal</Link>
           <Link to="/homenet" className="hover:opacity-70 transition-opacity">My HomeNet</Link>
           
           <Link to="/business" className="hidden lg:block hover:opacity-70 transition-opacity">Business</Link>

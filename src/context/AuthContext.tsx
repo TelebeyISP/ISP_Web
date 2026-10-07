@@ -12,6 +12,7 @@ import {
   setTokens,
   type ApiGateUser,
 } from '@/lib/apigate';
+import { clearMedusaSession } from '@/lib/medusa';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -92,6 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     tokenRef.current = null;
     clearTokens();
+    clearMedusaSession();
     localStorage.removeItem('telebey_wallet_user');
     localStorage.removeItem('telebey_profile');
     setUser(null);

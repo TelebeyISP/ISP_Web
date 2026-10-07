@@ -26,8 +26,8 @@ const FALLBACK_PLANS: DisplayPlan[] = [
     name: "Starter Plan",
     price: 15.00,
     data: "5GB",
-    description: "Perfect for light users who need high-speed connectivity.",
-    features: ["5GB 5G priority data", "Unlimited talk & text", "eSIM included", "4G LTE fallback"],
+    description: "A single line for light 5G use at home, on campus, or around town.",
+    features: ["5GB of 5G data", "Unlimited talk and text", "Bring your own phone", "eSIM ready", "Change or pause anytime"],
     color: "blue"
   },
   {
@@ -37,8 +37,8 @@ const FALLBACK_PLANS: DisplayPlan[] = [
     name: "Unlimited Pro",
     price: 45.00,
     data: "Unlimited",
-    description: "The ultimate power plan for unlimited freedom.",
-    features: ["Truly unlimited 5G data", "International roaming", "Priority engineering support", "Free hotspot"],
+    description: "Full-speed data for streaming, hotspot, and a busy household.",
+    features: ["Unlimited 5G data", "Mobile hotspot included", "Works alongside home internet", "Priority on the Telebey network", "The price on the card is the monthly price"],
     color: "indigo",
     popular: true
   },
@@ -49,8 +49,8 @@ const FALLBACK_PLANS: DisplayPlan[] = [
     name: "Global Explorer",
     price: 30.00,
     data: "20GB",
-    description: "Designed for travelers who need reliable global data.",
-    features: ["20GB international data", "Multi-country support", "Instant eSIM swap", "Data rollover"],
+    description: "20GB you can use at home and while you travel.",
+    features: ["20GB of travel-ready data", "Coverage in 150+ countries", "Turn the eSIM on before you fly", "Travel data is included in this plan"],
     color: "teal"
   }
 ];
@@ -109,7 +109,11 @@ export function Plans() {
   const handleAddToCart = async (plan: DisplayPlan) => {
     setAddingId(plan.id);
     try {
-      await addToCart(plan.variantCode, 1);
+      await addToCart(plan.variantCode, 1, {
+        productName: plan.name,
+        variantName: plan.data,
+        unitPrice: Math.round(plan.price * 100),
+      });
       navigate("/cart");
     } catch (err) {
       console.error("Add to cart failed", err);
@@ -123,10 +127,10 @@ export function Plans() {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="text-center mb-16 max-w-2xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-heading font-bold mb-6 tracking-tight">
-            Choose Your <span className="text-primary italic">Telebey</span> Plan
+            Choose a <span className="text-primary italic">Telebey</span> mobile plan
           </h1>
           <p className="text-lg text-muted-foreground">
-            No contracts. No hidden fees. Just premium 5G connectivity tailored to your lifestyle.
+            Three 5G plans. The price you see is the monthly price. Bring your own phone, or add a device from the shop and pair the line with home internet.
           </p>
           <p className="mt-3 text-xs font-medium uppercase tracking-widest text-muted-foreground/70">
             {fromApiGate ? "Live catalog from ApiGate" : "Showing catalog (ApiGate offline — local fallback)"}
@@ -197,15 +201,15 @@ export function Plans() {
         <div className="mt-20 p-10 bg-primary/5 border border-primary/10 rounded-3xl grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="flex items-center gap-4">
             <Globe className="w-8 h-8 text-primary opacity-50" />
-            <span className="font-bold text-lg leading-tight">Global Connectivity in 140+ countries</span>
+            <span className="font-bold text-lg leading-tight">Use your plan at home and in 150+ countries</span>
           </div>
           <div className="flex items-center gap-4">
             <ShieldCheck className="w-8 h-8 text-primary opacity-50" />
-            <span className="font-bold text-lg leading-tight">No credit check </span>
+            <span className="font-bold text-lg leading-tight">Change, pause, or stop a plan</span>
           </div>
           <div className="flex items-center gap-4">
             <Zap className="w-8 h-8 text-primary opacity-50" />
-            <span className="font-bold text-lg leading-tight">Instant activation via eSIM</span>
+            <span className="font-bold text-lg leading-tight">eSIM activation in minutes</span>
           </div>
         </div>
       </div>

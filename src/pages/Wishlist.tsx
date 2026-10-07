@@ -14,7 +14,12 @@ export function Wishlist() {
   const handleMoveToCart = async (item: any) => {
     // Note: addToCart expects a variantCode. We'll use the item.id or handle mapping.
     // For this implementation, we assume wishlist item ID is the product variant code.
-    await addToCart(item.id, 1);
+    await addToCart(item.id, 1, {
+      productName: item.productName,
+      variantName: item.variantName,
+      unitPrice: item.unitPrice,
+      image: item.image,
+    });
     await removeFromWishlist(item.id);
   };
 
@@ -49,9 +54,9 @@ export function Wishlist() {
           <Button 
             size="lg" 
             className="font-bold px-8 h-12 shadow-md shadow-primary/20"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/shop")}
           >
-            Explore Plans
+            Browse the shop
           </Button>
         </div>
       </main>
