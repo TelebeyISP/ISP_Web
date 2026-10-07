@@ -7,9 +7,9 @@ export type SitePage = {
 
 /** Pages a shopper can open from the header search, besides Medusa products. */
 export const SITE_PAGES: SitePage[] = [
-  { title: "Home", href: "/", description: "Telebey wireless home", keywords: "home telecom 5g vibes" },
-  { title: "Plans", href: "/plans", description: "Prepaid and postpaid mobile plans", keywords: "starter unlimited explorer data esim" },
-  { title: "Shop", href: "/shop", description: "Phones, routers, and accessories", keywords: "devices store hardware" },
+  { title: "Home", href: "/", description: "5G mobile and home internet", keywords: "home telecom 5g bundle family student" },
+  { title: "Plans", href: "/plans", description: "Mobile plans with a clear monthly price", keywords: "starter unlimited explorer data esim student family" },
+  { title: "Shop", href: "/shop", description: "Phones, home routers, and accessories", keywords: "devices store hardware router" },
   { title: "Network", href: "/plans", description: "Coverage and 5G plans", keywords: "coverage network 5g signal" },
   { title: "Bring Your Phone", href: "/activate", description: "Use your phone on Telebey", keywords: "byop esim activation" },
   { title: "Activate eSIM", href: "/activate", description: "Turn on a Telebey eSIM", keywords: "activate sim qr" },
@@ -21,8 +21,8 @@ export const SITE_PAGES: SitePage[] = [
   { title: "Billing", href: "/billing", description: "Pay your bill", keywords: "invoice payment" },
   { title: "Order History", href: "/order-history", description: "Past orders", keywords: "orders receipts" },
   { title: "Manage Data", href: "/manage-data", description: "Data usage", keywords: "usage sim" },
-  { title: "Business", href: "/business", description: "Telebey for business", keywords: "enterprise company" },
-  { title: "My HomeNet", href: "/homenet", description: "Home internet", keywords: "home wifi broadband" },
+  { title: "Business", href: "/business", description: "Lines for sole traders and teams", keywords: "enterprise company self-employed invoice" },
+  { title: "My HomeNet", href: "/homenet", description: "Home internet to pair with mobile", keywords: "home wifi broadband bundle" },
   { title: "Community", href: "/community", description: "Telebey community", keywords: "people profiles" },
   { title: "Sign in", href: "/auth", description: "ISP account login", keywords: "login register mytid password" },
   { title: "Privacy Policy", href: "/privacy", description: "How Telebey handles data", keywords: "privacy legal" },

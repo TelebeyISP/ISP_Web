@@ -212,10 +212,10 @@ export function Shop() {
               Telebey Store
             </span>
             <h1 className="text-5xl md:text-7xl font-heading font-extrabold tracking-tight text-foreground">
-              Hardware & Plans.
+              Phones and the gear around them.
             </h1>
             <p className="text-xl text-muted-foreground mt-2 max-w-xl leading-relaxed">
-              Explore the latest 5G devices, essential accessories, and premium global connectivity plans tailored for you.
+              5G phones, a home router, and accessories. Use them with a Telebey plan, or bring a phone you already own.
             </p>
             <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground/70">
               {fromMedusa ? "Catalog from Medusa" : "Medusa offline — showing saved products"}

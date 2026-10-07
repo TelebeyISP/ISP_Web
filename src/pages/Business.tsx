@@ -69,17 +69,15 @@ export function Business() {
             </div>
             
             <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-medium tracking-tight leading-[1.05]">
-              Global Connectivity.
+              Lines for a team,
               <br />
-              At Scale.
+              or just for you.
             </h1>
             
             <p className="text-lg md:text-xl text-white/90 font-light leading-relaxed max-w-2xl text-shadow-sm">
-              Empower your international workforce with Telebey Enterprise. 
-              <br className="hidden md:block" />
-              Comprehensive tools for managing thousands of eSIMs, monitoring 
-              <br className="hidden md:block" />
-              real-time data usage, and delivering seamless global reach.
+              Telebey Business is mobile data for a one-person company or a whole team.
+              One invoice, extra SIMs when you hire, and home-office internet
+              when the work stays at the desk.
             </p>
 
             <div className="flex flex-wrap items-center gap-6 pt-2">
@@ -96,7 +94,7 @@ export function Business() {
           
           <div className="flex flex-col md:flex-row items-center justify-between text-[11px] font-semibold tracking-[0.15em] text-white/90 uppercase">
             <div className="mb-4 md:mb-0 drop-shadow-md">
-              ADVANCED ENTERPRISE CONNECTIVITY
+              SOLE TRADERS · TEAMS · HOME OFFICES
             </div>
           </div>
         </div>
@@ -111,16 +109,16 @@ export function Business() {
             <div className="md:col-span-8 bg-[#f8fbff] rounded-[32px] p-10 md:p-12 relative overflow-hidden group border border-[#e5f0ff]">
               <div className="flex justify-between items-start relative z-10">
                 <h3 className="text-4xl md:text-[2.75rem] font-medium tracking-tight text-gray-900 leading-[1.1] max-w-md">
-                  Unified fleet
+                  Every line on
                   <br/>
-                  management
+                  one invoice
                 </h3>
                 <div className="w-14 h-14 rounded-full bg-[#1877f2] text-white flex items-center justify-center shrink-0 shadow-xl shadow-blue-500/20 transform group-hover:scale-105 transition-transform">
                   <BarChart3 className="w-7 h-7" />
                 </div>
               </div>
               <p className="text-[#64748b] text-[1.05rem] leading-relaxed mt-6 max-w-sm relative z-10">
-                Monitor data usage in real-time across your entire organization. Provision, pause, and relocate plans instantly.
+                See data use for each line, add a SIM when someone joins, and pause a line that is not in use. The monthly total stays on one bill.
               </p>
               <div className="absolute right-0 bottom-[-10%] w-[55%] pt-[55%] z-0 translate-x-12 translate-y-12 group-hover:translate-x-8 group-hover:translate-y-8 transition-transform duration-700 ease-out">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#93c5fd] via-[#e0f2fe] to-white shadow-[-30px_-30px_60px_rgba(255,255,255,0.9)_inset,30px_30px_60px_rgba(0,0,0,0.05)_inset]">
@@ -133,16 +131,16 @@ export function Business() {
             <div className="md:col-span-4 bg-[#f8fbff] rounded-[32px] p-10 md:p-12 flex flex-col justify-between border border-[#e5f0ff] group">
               <div className="flex justify-between items-start mb-16">
                 <h3 className="text-4xl md:text-[2.75rem] font-medium tracking-tight text-gray-900 leading-[1.1]">
-                  Corporate
+                  Made for
                   <br/>
-                  Security
+                  sole traders
                 </h3>
                 <div className="w-14 h-14 rounded-full bg-[#1877f2] text-white flex items-center justify-center shrink-0 shadow-xl shadow-blue-500/20 transform group-hover:scale-105 transition-transform">
                   <ShieldCheck className="w-7 h-7" />
                 </div>
               </div>
               <p className="text-[#64748b] text-[1.05rem] leading-relaxed">
-                Dedicated Enterprise APN options and end-to-end encrypted global roaming for absolute data integrity.
+                A work line that is separate from your personal phone, with a plan you can raise or lower as client work comes and goes.
               </p>
             </div>
 
@@ -150,16 +148,16 @@ export function Business() {
             <div className="md:col-span-4 bg-[#f8fbff] rounded-[32px] p-10 md:p-12 flex flex-col justify-between border border-[#e5f0ff] group">
               <div className="flex justify-between items-start mb-16">
                 <h3 className="text-4xl md:text-[2.75rem] font-medium tracking-tight text-gray-900 leading-[1.1]">
-                  24/7 Priority
+                  Help when the
                   <br/>
-                  Support
+                  line is the office
                 </h3>
                 <div className="w-14 h-14 rounded-full bg-[#1877f2] text-white flex items-center justify-center shrink-0 shadow-xl shadow-blue-500/20 transform group-hover:scale-105 transition-transform">
                   <Zap className="w-7 h-7 fill-current" />
                 </div>
               </div>
               <p className="text-[#64748b] text-[1.05rem] leading-relaxed">
-                Dedicated account managers and priority technical support to ensure your business never stays offline.
+                Reach Telebey support when a line, eSIM, or home-office connection is what keeps the work moving.
               </p>
             </div>
 
@@ -167,9 +165,9 @@ export function Business() {
             <div className="md:col-span-8 bg-[#f8fbff] rounded-[32px] p-10 md:p-12 relative overflow-hidden group flex flex-col justify-between border border-[#e5f0ff]">
               <div className="flex justify-between items-start relative z-10 w-full mb-8">
                 <h3 className="text-4xl md:text-[2.75rem] font-medium tracking-tight text-gray-900 leading-[1.1]">
-                  Flexible Corporate
+                  Grow the plan
                   <br/>
-                  Billing & API
+                  as you grow
                 </h3>
                 <div className="w-14 h-14 rounded-full bg-[#1877f2] text-white flex items-center justify-center shrink-0 shadow-xl shadow-blue-500/20 transform group-hover:scale-105 transition-transform">
                   <CreditCard className="w-7 h-7" />
@@ -182,8 +180,8 @@ export function Business() {
                     <Star className="w-6 h-6 text-[#1877f2] fill-current" />
                     <span className="bg-[#1877f2] text-white text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Enterprise Plus</span>
                   </div>
-                  <h4 className="text-2xl font-bold mb-3 text-gray-900">Custom Fleet</h4>
-                  <p className="text-[#64748b] text-sm mb-8 leading-relaxed max-w-[85%]">Bulk provisioning and API integration for full automation of your connectivity needs.</p>
+                  <h4 className="text-2xl font-bold mb-3 text-gray-900">Team lines</h4>
+                  <p className="text-[#64748b] text-sm mb-8 leading-relaxed max-w-[85%]">Start with one work SIM. Add lines and a home-office internet connection when the company gets bigger.</p>
                   <div className="flex items-end gap-1.5">
                     <span className="text-5xl font-black tracking-tighter text-gray-900">Talk</span>
                     <span className="text-gray-400 text-sm pb-1.5 font-medium">to an expert</span>
@@ -207,7 +205,7 @@ export function Business() {
         
         <div className="text-center mb-4">
           <h4 className="text-[11px] font-bold tracking-[0.2em] text-[#1877f2] uppercase mb-2">Global Network Availability</h4>
-          <p className="text-2xl font-medium text-gray-900">Enterprise connectivity in 150+ countries</p>
+          <p className="text-2xl font-medium text-gray-900">Work lines that travel to 150+ countries</p>
         </div>
 
         {/* Row 1 */}
@@ -244,10 +242,10 @@ export function Business() {
             
             <div className="relative z-10 space-y-8">
               <h2 className="text-4xl md:text-6xl font-medium tracking-tight mb-4">
-                Scale your global <br /> workforce today.
+                A work line that <br /> stays easy to run.
               </h2>
               <p className="text-white/80 text-xl max-w-2xl mx-auto font-light">
-                Join leading global enterprises building on Telebey Nett. Get a custom solution tailored to your operational scale.
+                Tell us how many people need a SIM and whether the office is a home address. We will match a Telebey Business setup to that.
               </p>
               <Button size="lg" className="h-16 px-12 rounded-full bg-white text-black hover:bg-gray-100 text-xl font-medium shadow-xl">
                 Request a Custom Quote

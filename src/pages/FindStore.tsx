@@ -35,7 +35,7 @@ export function FindStore() {
         <div className="container mx-auto px-6">
           <div className="max-w-xl">
             <h1 className="text-4xl md:text-5xl font-heading font-extrabold tracking-tight mb-4">Find a Store</h1>
-            <p className="text-muted-foreground text-lg mb-8">Visit a Telebey expert for plan consultation, device assistance, and high-speed network testing.</p>
+            <p className="text-muted-foreground text-lg mb-8">Visit a Telebey store to compare mobile plans, set up an eSIM, or ask which home internet speed fits your address.</p>
             
             <div className="relative group">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />

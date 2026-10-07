@@ -53,7 +53,7 @@ export function ActivateEsim() {
       <div className="container mx-auto px-4 max-w-2xl text-center">
         <h1 className="text-4xl font-heading font-bold mb-6">Activate Your eSIM</h1>
         <p className="text-lg text-muted-foreground mb-8">
-          Ready to join the Telebey network? Enter the ICCID and IMSI from your eSIM kit. Activation is processed by ApiGate.
+          Keep the phone you already have. Enter the ICCID and IMSI from your Telebey eSIM and the line is attached to your account in a few minutes.
         </p>
         
         <form onSubmit={handleActivate} className="bg-card border border-border rounded-xl p-8 shadow-sm text-left">

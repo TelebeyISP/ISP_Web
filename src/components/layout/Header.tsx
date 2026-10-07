@@ -25,12 +25,12 @@ export function Header() {
 
           <nav className="hidden md:flex items-center gap-4 lg:gap-5 font-medium text-sm lg:text-base">
             <Link to="/plans" className="hover:text-primary transition-colors">Plans</Link>
-            <a href="#" className="hover:text-primary transition-colors">Network</a>
+            <Link to="/plans" className="hover:text-primary transition-colors">Network</Link>
             <Link to="/shop" className="flex items-center hover:text-primary transition-colors group">
               Shop <ChevronDown className="ml-1 h-4 w-4 group-hover:translate-y-0.5 transition-transform" />
             </Link>
-            <a href="#" className="hidden lg:block hover:text-primary transition-colors">Bring Your Phone</a>
-            <a href="#" className="hover:text-primary transition-colors">Support</a>
+            <Link to="/activate" className="hidden lg:block hover:text-primary transition-colors">Bring Your Phone</Link>
+            <Link to="/find-store" className="hover:text-primary transition-colors">Support</Link>
           </nav>
         </div>
 

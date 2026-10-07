@@ -11,11 +11,11 @@ export function Footer() {
           <div>
             <h4 className="font-bold text-white mb-4">Products &amp; Services</h4>
             <ul className="space-y-3 text-sm opacity-90">
-              <li><a href="#" className="hover:text-primary transition-colors">5G Network</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Prepaid Plans</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">International Pass</a></li>
+              <li><Link to="/plans" className="hover:text-primary transition-colors">5G Mobile Plans</Link></li>
+              <li><Link to="/homenet" className="hover:text-primary transition-colors">Home Internet</Link></li>
+              <li><Link to="/plans" className="hover:text-primary transition-colors">Travel Data</Link></li>
               <li><Link to="/shop" className="hover:text-primary transition-colors">Phones &amp; Accessories</Link></li>
-              <li><Link to="/activate" className="hover:text-primary transition-colors">eSIM Activation</Link></li>
+              <li><Link to="/activate" className="hover:text-primary transition-colors">Bring Your Phone</Link></li>
               <li><a href="#" className="hover:text-primary transition-colors">Mobile Hotspot</a></li>
             </ul>
           </div>
