@@ -109,7 +109,11 @@ export function Plans() {
   const handleAddToCart = async (plan: DisplayPlan) => {
     setAddingId(plan.id);
     try {
-      await addToCart(plan.variantCode, 1);
+      await addToCart(plan.variantCode, 1, {
+        productName: plan.name,
+        variantName: plan.data,
+        unitPrice: Math.round(plan.price * 100),
+      });
       navigate("/cart");
     } catch (err) {
       console.error("Add to cart failed", err);

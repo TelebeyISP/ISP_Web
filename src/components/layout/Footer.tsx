@@ -14,6 +14,7 @@ export function Footer() {
               <li><a href="#" className="hover:text-primary transition-colors">5G Network</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Prepaid Plans</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">International Pass</a></li>
+              <li><Link to="/shop" className="hover:text-primary transition-colors">Shop</Link></li>
               <li><Link to="/activate" className="hover:text-primary transition-colors">eSIM Activation</Link></li>
               <li><a href="#" className="hover:text-primary transition-colors">Mobile Hotspot</a></li>
             </ul>

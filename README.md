@@ -2,7 +2,7 @@
 
 Telebey is the customer-facing MVNO web app: plans, eSIM activation, account, cart, and identity login.
 
-This frontend talks to **[ApiGate](https://github.com/TelebeyISP/ApiGate)** for authentication, data plans, and SIM lifecycle. The Sylius shop API remains available for cart/catalog when that service is running.
+This frontend talks to **[ApiGate](https://github.com/TelebeyISP/ApiGate)** for authentication, data plans, and SIM lifecycle. The shop in `shop/` is a [Medusa](https://medusajs.com) backend. The website catalog and cart call it through the Vite `/medusa` proxy, and shop sign-in uses the same ISP accounts as the rest of the site.
 
 ## App preview
 
@@ -55,6 +55,33 @@ Demo accounts (from ApiGate seed data):
 - User: `user@test.com` / `Test1234!`
 - Admin: `admin@telebey.com` / `Admin1234!`
 
+## Shop (Medusa)
+
+The storefront is this website (`/shop`), with the same navbar and footer as the other pages. Medusa runs as the commerce API.
+
+```bash
+# PostgreSQL must be running, then:
+cd shop
+pnpm install
+cd apps/backend
+pnpm exec medusa db:migrate
+pnpm exec medusa exec ./src/scripts/seed-telebey-catalog.ts
+pnpm exec medusa user -e admin@telebey.com -p supersecret
+pnpm dev
+```
+
+- API: http://localhost:9000
+- Admin: http://localhost:9000/app
+- Store on the website: http://localhost:5173/shop
+
+Copy the publishable API key from Admin → Settings → Publishable API Keys into `.env.local`:
+
+```bash
+VITE_MEDUSA_PUBLISHABLE_KEY=pk_...
+```
+
+Logging in with an ISP account (email and password on `/auth`) creates or reuses the matching Medusa customer and attaches the open cart. Wallet-only sessions stay on the website and are not shop customers.
+
 ## Run the web app
 
 ```bash
@@ -73,6 +100,6 @@ npm run preview
 
 - React 19 + TypeScript + Vite
 - Tailwind CSS + shadcn/ui
-- Axios client in `src/lib/apigate.ts`
+- Axios client in `src/lib/apigate.ts` and `src/lib/medusa.ts`
 - ApiGate (NestJS) for auth / SIMs / plans
-- Optional Sylius shop API for cart (`VITE_SYLIUS_API_URL`)
+- Medusa in `shop/` for the device catalog and cart (`VITE_MEDUSA_PUBLISHABLE_KEY`)

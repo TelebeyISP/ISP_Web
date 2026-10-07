@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { ShoppingCart, Heart, Search, Filter, Star, Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ShoppingCart, Heart, Search, Filter, Star, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useShop } from "@/hooks/use-shop";
 import { useWishlist } from "@/context/WishlistContext";
+import { listProducts, listRegions, preferredRegion, type MedusaProduct } from "@/lib/medusa";
 import { toast } from "sonner";
 
-// Mock Data
+// Shown only when the Medusa backend is offline.
 const categories = ["All", "Smartphones", "Accessories", "Plans", "Routers"];
 
 const products = [
@@ -71,14 +72,74 @@ const products = [
   }
 ];
 
+type StoreCard = {
+  id: string;
+  variantId: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  rating: number;
+  reviews: number;
+  image: string;
+};
+
+function cardsFromMedusa(products: MedusaProduct[]): StoreCard[] {
+  return products.map((product) => {
+    const variant = product.variants?.[0];
+    const amount = variant?.calculated_price?.calculated_amount;
+    return {
+      id: product.id,
+      variantId: variant?.id || product.id,
+      name: product.title,
+      description: product.description || "",
+      price: Math.round((amount ?? 0) * 100),
+      category: product.categories?.[0]?.name || "Shop",
+      rating: 4.8,
+      reviews: 0,
+      image: product.thumbnail || product.images?.[0]?.url || "",
+    };
+  });
+}
+
 export function Shop() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const { addToCart, cart } = useShop();
   const { addToWishlist, wishlist } = useWishlist();
   const [addedItems, setAddedItems] = useState<Record<string, boolean>>({});
+  const [catalog, setCatalog] = useState<StoreCard[]>(
+    products.map((product) => ({ ...product, variantId: product.id }))
+  );
+  const [categoryNames, setCategoryNames] = useState(categories);
+  const [fromMedusa, setFromMedusa] = useState(false);
+  const [loadingCatalog, setLoadingCatalog] = useState(true);
 
-  const filteredProducts = products.filter(product => {
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const regions = await listRegions();
+        const region = preferredRegion(regions);
+        const remote = await listProducts(region?.id);
+        if (cancelled || !remote.length) return;
+        const cards = cardsFromMedusa(remote);
+        const names = ["All", ...Array.from(new Set(cards.map((card) => card.category)))];
+        setCatalog(cards);
+        setCategoryNames(names);
+        setFromMedusa(true);
+      } catch (err) {
+        console.warn("Medusa catalog unavailable, showing local products", err);
+      } finally {
+        if (!cancelled) setLoadingCatalog(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const filteredProducts = catalog.filter(product => {
     const matchesCategory = activeCategory === "All" || product.category === activeCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           product.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -88,7 +149,11 @@ export function Shop() {
   const handleAddToCart = async (product: any) => {
     try {
       // The useShop context expects a variant code, so we use the product ID for now.
-      await addToCart(product.id, 1);
+      await addToCart(product.variantId, 1, {
+        productName: product.name,
+        unitPrice: product.price,
+        image: product.image,
+      });
       
       // Visual feedback
       setAddedItems(prev => ({ ...prev, [product.id]: true }));
@@ -139,6 +204,9 @@ export function Shop() {
             <p className="text-xl text-muted-foreground mt-2 max-w-xl leading-relaxed">
               Explore the latest 5G devices, essential accessories, and premium global connectivity plans tailored for you.
             </p>
+            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground/70">
+              {fromMedusa ? "Catalog from Medusa" : "Medusa offline — showing saved products"}
+            </p>
           </div>
         </div>
       </section>
@@ -153,7 +221,7 @@ export function Shop() {
                 <Filter className="w-5 h-5" /> Categories
               </h3>
               <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0 custom-scrollbar">
-                {categories.map(category => (
+                {categoryNames.map(category => (
                   <button
                     key={category}
                     onClick={() => setActiveCategory(category)}
@@ -200,10 +268,14 @@ export function Shop() {
             </div>
 
             {/* Product Grid */}
-            {filteredProducts.length > 0 ? (
+            {loadingCatalog ? (
+              <div className="flex items-center justify-center py-24 text-muted-foreground">
+                <Loader2 className="w-8 h-8 animate-spin" />
+              </div>
+            ) : filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map(product => {
-                  const inCart = cart?.items.some(i => i.id === product.id);
+                  const inCart = cart?.items.some(i => i.variantId === product.variantId || i.id === product.id);
                   const isJustAdded = addedItems[product.id];
                   const inWishlist = wishlist?.some(i => i.id === product.id);
 
