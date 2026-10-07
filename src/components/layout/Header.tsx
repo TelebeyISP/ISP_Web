@@ -14,23 +14,22 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full bg-background border-b border-border shadow-sm">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         
-        {/* Left: Logo */}
-        <div className="flex-shrink-0">
-          <Link to="/" className="flex items-center">
+        {/* Left: Logo and main nav */}
+        <div className="flex items-center min-w-0 gap-6 lg:gap-8">
+          <Link to="/" className="flex items-center flex-shrink-0">
             <img src="/telebey-logo.svg" alt="Telebey" className="h-8 md:h-10 object-contain" />
           </Link>
-        </div>
 
-        {/* Center: Main Nav (Hidden on Mobile) */}
-        <nav className="hidden md:flex items-center justify-center space-x-8 font-medium text-sm lg:text-base">
-          <Link to="/plans" className="hover:text-primary transition-colors">Plans</Link>
-          <a href="#" className="hover:text-primary transition-colors">Network</a>
-          <Link to="/shop" className="flex items-center hover:text-primary transition-colors group">
-            Shop <ChevronDown className="ml-1 h-4 w-4 group-hover:translate-y-0.5 transition-transform" />
-          </Link>
-          <a href="#" className="hidden lg:block hover:text-primary transition-colors text-muted-foreground hover:text-primary transition-colors">Bring Your Phone</a>
-          <a href="#" className="hover:text-primary transition-colors">Support</a>
-        </nav>
+          <nav className="hidden md:flex items-center gap-4 lg:gap-5 font-medium text-sm lg:text-base">
+            <Link to="/plans" className="hover:text-primary transition-colors">Plans</Link>
+            <a href="#" className="hover:text-primary transition-colors">Network</a>
+            <Link to="/shop" className="flex items-center hover:text-primary transition-colors group">
+              Shop <ChevronDown className="ml-1 h-4 w-4 group-hover:translate-y-0.5 transition-transform" />
+            </Link>
+            <a href="#" className="hidden lg:block hover:text-primary transition-colors">Bring Your Phone</a>
+            <a href="#" className="hover:text-primary transition-colors">Support</a>
+          </nav>
+        </div>
 
         {/* Right: Actions */}
         <div className="flex items-center space-x-2 md:space-x-4">
